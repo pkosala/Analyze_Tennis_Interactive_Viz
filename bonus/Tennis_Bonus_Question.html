@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+
+body {
+  font: 10px sans-serif;
+}
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.dot {
+  stroke: #000;
+}
+
+.d3-tip {
+  line-height: 1;
+  font-weight: bold;
+  padding: 12px;
+  background: rgba(0, 0, 0, 0.8);
+  color: #fff;
+  border-radius: 2px;
+}
+
+</style>
+<body>
+<div id="tooltip" style="display:none;position:absolute;z-index:1001;background-color:gray"></div>
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<script>
+
+var margin = {top: 20, right: 20, bottom: 30, left: 40},
+    width = 960 - margin.left - margin.right,
+    height = 500 - margin.top - margin.bottom;
+
+var x = d3.scale.linear()
+    .range([0, width]);
+
+var y = d3.scale.linear()
+    .range([height, 0]);
+
+var color = d3.scale.category10();
+
+var xAxis = d3.svg.axis()
+    .scale(x)
+    .orient("bottom");
+
+var yAxis = d3.svg.axis()
+    .scale(y)
+    .orient("left");
+
+var data = [{"winners":71,"errors":64,"players":"Roger Federer","victory":0},
+{"winners":46,"errors":42,"players":"Roger Federer","victory":1},
+{"winners":50,"errors":48,"players":"Roger Federer","victory":1},
+{"winners":45,"errors":19,"players":"Roger Federer","victory":1},
+{"winners":26,"errors":21,"players":"Novak Djokovic","victory":1},
+{"winners":57,"errors":44,"players":"Novak Djokovic","victory":1},
+{"winners":47,"errors":61,"players":"Novak Djokovic","victory":1},
+{"winners":46,"errors":35,"players":"Novak Djokovic","victory":1},
+{"winners":50,"errors":41,"players":"Rafa Nadal","victory":1},
+{"winners":44,"errors":71,"players":"Rafa Nadal","victory":0},
+{"winners":19,"errors":32,"players":"Rafa Nadal","victory":0}];
+
+
+
+var svg = d3.select("body").append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+    .append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+    .on("mouseover", function(d){
+               current_position = d3.mouse(this); 
+               var tooltipDiv = document.getElementById('tooltip');
+               //tooltipDiv.innerHTML = data.players;
+               tooltipDiv.style.top = current_position[1]+'px';
+               tooltipDiv.style.left = current_position[0]+'px';
+               tooltipDiv.style.display = "block";
+
+               d3.select(this).style("fill", "red");
+           });
+
+
+  data.forEach(function(d) {
+    d.winners = +d.winners;
+    d.errors = +d.errors;
+    d.victory = +d.victory;
+  });
+
+  x.domain(d3.extent(data, function(d) { return d.errors; })).nice();
+  y.domain(d3.extent(data, function(d) { return d.winners; })).nice();
+
+
+  svg.append("g")
+      .attr("class", "x axis")
+      .attr("transform", "translate(0," + height + ")")
+      .call(xAxis)
+    .append("text")
+      .attr("class", "label")
+      .attr("x", width)
+      .attr("y", -6)
+      .style("text-anchor", "end")
+      .text("Winners");
+
+  svg.append("g")
+      .attr("class", "y axis")
+      .call(yAxis)
+      .append("text")
+      .attr("class", "label")
+      .attr("transform", "rotate(-90)")
+      .attr("y", 6)
+      .attr("dy", ".71em")
+      .style("text-anchor", "end")
+      .text("Errors");
+
+
+  svg.selectAll(".dot")
+      .data(data)
+    .enter().append("circle")
+      .attr("class", "dot")
+      .attr("r", 5)
+      .attr("cx", function(d) { return x(d.errors); })
+      .attr("cy", function(d) { return y(d.winners); })
+      .style("fill", function(d) { return color(d.victory); });
+
+  var legend = svg.selectAll(".legend")
+      .data(color.domain())
+      .enter().append("g")
+      .attr("class", "legend")
+      .attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
+
+  legend.append("rect")
+      .attr("x", width - 18)
+      .attr("width", 18)
+      .attr("height", 18)
+      .style("fill", color);
+
+  legend.append("text")
+      .attr("x", width - 24)
+      .attr("y", 9)
+      .attr("dy", ".35em")
+      .style("text-anchor", "end")     
+      .text(function(d) { return (d===1? "Winner" : "Loser")});
+
+</script>

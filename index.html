@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Assignment2</title>
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+    <script src="mds_data.js"></script>
+    <script src="final_data.js"></script>
+
+</head>
+<body>
+    <h2>Data Visualization Assignment 2: Interative Visualization</h2>
+    <svg id="chart1" width="500" height="500"></svg>
+    <svg id="chart2" width="400" height="250"></svg>
+    <svg id="chart3" width="400" height="250"></svg>
+    <div id="description" style="font-size: 18px;">
+        The scatter plot is the two dimensional representation of the high dimensional data provided. The 11 variables provided
+        in the dataset are fed to a sklearn's multi-dimensional scaling algorithm and two dimensional points are generated.
+        The red dots represent the runners and the green dot represents the winners.
+        <br><br><b>Interactive Component:</b>
+        <br>When user clicks on a green dot and a red dot, two bar charts show up. First bar chart represents the total points gained by the players
+        and second bar chart shows the average first serve points of the selected players.
+        <br><br>
+        <b>Conclusions:</b>
+            <br>Scatter plots shows the data has patterns and is highly distinguishable for predicting a winner and a runner.
+        User can select the players they specifically want to analyze and view the players two key metrics: Total points and average first Serve
+    </div>
+    <script src="create_charts.js"></script>
+</body>
+</html>
